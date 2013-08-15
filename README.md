@@ -1,24 +1,31 @@
-expose
+Expose
 ======
 
-Scans a directory hierarchy, identify the photos stared in Picasa and create 
-a flat list of album suitable to be imported but iTunes.
+Creates a flat list of album suitable to be imported with iTunes, from
+the documents stared in Picasa.
 
-This software requires Java runtime: http://java.com/en/download
+### Prerequisites:
+ * It is recomanded to have a backup of your photos in order to avoid 
+   loss of data.
+ * This software requires Java runtime: (http://java.com/en/download)
 
-java -jar expose.jar <source> <target>
 
- * source: full path of the root directory of the document collection
- * target: full path where stared document are copied. This directory 
-           must be initially empty.
+### Command line:
+  `java -jar expose.jar <source> <target>`
 
-Warning: The target is purged for the documents that are not seend stared in 
+ * source: directory of the Picasa document collection
+ * target: directory where stared document are copied. This directory 
+           must be initially empty. The target must be in the same 
+           filesystem as the source and the file system must support hardlinks.
+
+**Warning:** The target is purged for the documents that are not seend stared in 
 the source. It means the files and directory in the target can be deleted.
 
-First the process scans recursively the directory hierarchy, looking for 
-picasa .ini files. Then the files are parsed in order to extract the list
-of stared documents. Finaly an album is create foe every directory that holds
-at least one stared file. The documents are not copied, but a hardlink is 
-created instead. The files of the target directory that no longer match 
+
+First the program scans recursively the directory hierarchy, looking for 
+Picasa '.ini' files. Then the files are parsed in order to extract the list
+of stared documents. Now a directory is created for every album that holds
+at least one stared file. The album is populated with links to the original  
+documents. Finally the files & directories of the target that no longer match 
 a stared document of the input are removed.
 
