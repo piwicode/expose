@@ -1,12 +1,5 @@
 package org.piwicode.expose;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Pierre
- * Date: 8/15/13
- * Time: 5:47 PM
- * To change this template use File | Settings | File Templates.
- */
 public class Stat {
 
     protected int nbPhoto;
