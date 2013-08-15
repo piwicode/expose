@@ -24,7 +24,7 @@ the source. It means the files and directory in the target can be deleted.
 
 First the program scans recursively the directory hierarchy, looking for 
 Picasa '.ini' files. Then the files are parsed in order to extract the list
-of stared documents. Now a directory is created for every album that holds
+of stared documents. Now a directory is created for every album that hold
 at least one stared file. The album is populated with links to the original  
 documents. Finally the files & directories of the target that no longer match 
 a stared document of the input are removed.
