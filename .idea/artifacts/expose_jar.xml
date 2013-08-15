@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="expose:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/expose_jar</output-path>
+    <root id="archive" name="expose.jar">
+      <element id="module-output" name="expose" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/ini4j-0.5.2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
