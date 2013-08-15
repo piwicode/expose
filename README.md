@@ -5,8 +5,7 @@ Creates a flat list of album suitable to be imported with iTunes, from
 the documents stared in Picasa.
 
 ### Prerequisites:
- * It is recomanded to have a backup of your photos in order to avoid 
-   loss of data.
+ * It is recomanded to have a backup of your photos to avoid any data loss
  * This software requires Java runtime: (http://java.com/en/download)
 
 
