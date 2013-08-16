@@ -18,13 +18,13 @@ the documents stared in Picasa.
            filesystem as the source and the file system must support hardlinks.
 
 **Warning:** The target is purged for the documents that are not seend stared in 
-the source. It means the files and directory in the target can be deleted.
+the source. It means the files and directory in the target can be lost.
 
 ### Details:
-First the program scans recursively the directory hierarchy, looking for 
+First the program scans recursively the directory hierarchy, looking for
 Picasa '.ini' files. Then the files are parsed in order to extract the list
 of stared documents. Now a directory is created for every album that hold
-at least one stared file. The album is populated with links to the original  
-documents. Finally the files & directories of the target that no longer match 
+at least one stared file. The album is populated with links to the original
+documents. Finally the files & directories of the target that no longer match
 a stared document of the input are removed.
 
