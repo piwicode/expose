@@ -20,7 +20,7 @@ the documents stared in Picasa.
 **Warning:** The target is purged for the documents that are not seend stared in 
 the source. It means the files and directory in the target can be deleted.
 
-
+### Details:
 First the program scans recursively the directory hierarchy, looking for 
 Picasa '.ini' files. Then the files are parsed in order to extract the list
 of stared documents. Now a directory is created for every album that hold
