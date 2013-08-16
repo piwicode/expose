@@ -6,7 +6,7 @@ the documents stared in Picasa.
 
 ### Prerequisites:
  * It is recomanded backup of your photos in oreder to avoid any data loss
- * This software requires Java runtime: (http://java.com/en/download)
+ * This software requires [Java runtime 1.7](http://java.com/en/download)
 
 
 ### Command line:
