@@ -8,14 +8,40 @@ import java.io.InputStream;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class Worker {
+    private static final Pattern preservedDirectory = Pattern.compile("iPod Photo Cache");
+
+    private static final Pattern simplify = Pattern.compile(
+            "(" +
+                    "Janvier|" +
+                    "F[eé]vrier|" +
+                    "Mars|" +
+                    "Avril|" +
+                    "Mai|" +
+                    "Juin|" +
+                    "Juillet|" +
+                    "Août|" +
+                    "Septembre|" +
+                    "Octobre|" +
+                    "Novembre|" +
+                    "D[eé]cembre" +
+                    ")\\s*" + "\\\\" +
+                    "\\s*(\\d+\\s*-)?\\s*"
+    );
+
     private final Stat stat;
 
-    public Worker(Stat stat) {
+    public Worker(final Stat stat) {
         this.stat = stat;
     }
 
+    /**
+     * @param in  directory where picasa albums are read.
+     * @param out directory where ablums are overwritten.
+     * @throws IOException
+     */
     public void expose(final Path in, final Path out) throws IOException {
         if (Files.isDirectory(in) == false) {
             throw new IllegalArgumentException("Can't find Picasa library at " + in);
@@ -24,15 +50,16 @@ public class Worker {
             throw new IllegalArgumentException("Can't find output out at " + out);
         }
 
+        // Create the output directory if needed on first run
         Files.createDirectories(out);
 
-        final List<Path> picasaDataPaths = findPicasaFiles(in);
-        final Set<String> albums = new HashSet<>();
-        for (Path picasaDataPath : picasaDataPaths) {
+        final Set<String> createdAlbums = new HashSet<>();
+        for (Path picasaDataPath : findPicasaFiles(in)) {
             try {
-                processPicasaAlbum(in, out, albums, picasaDataPath);
+                processPicasaAlbum(in, out, createdAlbums, picasaDataPath);
             } catch (IOException e) {
                 stat.error("Unable to process album %s: %s", picasaDataPath.getParent(), e.getMessage());
+                // Recover from an album failure
             } finally {
                 stat.incAlbumDone();
             }
@@ -40,7 +67,10 @@ public class Worker {
 
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(out)) {
             for (Path asset : directoryStream) {
-                if (albums.remove(asset.getFileName().toString()) == false) {
+                final String dirName = asset.getFileName().toString();
+                if (createdAlbums.remove(dirName) == false
+                        && !preservedDirectory.matcher(dirName).matches()) {
+                    //This is not an album that have been created
                     stat.info("Delete %s", asset);
                     try {
                         stat.incAlbumDeleted();
@@ -178,7 +208,7 @@ public class Worker {
     }
 
     private String composeAlbumName(String s) {
-        return s.replace("\\", "-");
+        return simplify.matcher(s).replaceFirst("").replace("\\", "-");
     }
 
 

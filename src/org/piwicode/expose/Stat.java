@@ -1,5 +1,10 @@
 package org.piwicode.expose;
 
+/**
+ * Accumulates statistics regarding the album file structure composition.
+ * the statistics are reported by the working thread and displayed to
+ * the user interface.
+ */
 public class Stat {
 
     protected int nbPhoto;
@@ -15,8 +20,6 @@ public class Stat {
     protected int nbAlbumToProcess;
     protected int nbAlbumDone;
     protected int nbFile;
-
-
 
     public void incFile() {
         nbFile++;

@@ -14,8 +14,9 @@ import java.util.concurrent.FutureTask;
 
 public class Expose {
 
-    final Executor ex = Executors.newSingleThreadExecutor();
-    FutureTask<Void> task;
+    private final Executor ex = Executors.newSingleThreadExecutor();
+    private FutureTask<Void> task;
+    private final Path from,  to;
 
     class SwingStat extends Stat {
         @Override
@@ -155,11 +156,11 @@ public class Expose {
     }
 
     void setStaredAlbum(int cur, int add, int del) {
-        staredAlbumField.setText(cur + " (+" + add + ") (-" + del + ")");
+        staredAlbumField.setText(cur + " ( " + add + " added, " + del + " deleted )");
     }
 
     void setStaredPhoto(int cur, int add, int del) {
-        staredPhotoField.setText(cur + " (+" + add + ") (-" + del + ")");
+        staredPhotoField.setText(cur + " ( " + add + " added, " + del + " deleted )");
     }
 
     class WhenDone implements Runnable {
@@ -167,35 +168,49 @@ public class Expose {
         @Override
         public void run() {
             startButton.setEnabled(true);
+            okButton.setEnabled(true);
         }
     }
 
     public Expose(final Path from, final Path to) {
+        this.from=from;
+        this.to=to;
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startButton.setEnabled(false);
-                scanProgress.setIndeterminate(true);
-                exposeProgress.setValue(0);
-                logTextArea.setText("");
-                staredAlbumField.setText("0");
-                staredPhotoField.setText("0");
-                albumField.setText("0");
-                photoField.setText("0");
-                task = new FutureTask<>(new Callable<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        try {
-                            new Worker(new SwingStat()).expose(from,to);
-                        } finally {
-                            SwingUtilities.invokeLater(new WhenDone());
-                        }
-                        return null;
-                    }
-                });
-                ex.execute(task);
+                onStartButtonPressed();
             }
         });
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+    }
+
+    private void onStartButtonPressed() {
+        startButton.setEnabled(false);
+        okButton.setEnabled(false);
+        scanProgress.setIndeterminate(true);
+        exposeProgress.setValue(0);
+        logTextArea.setText("");
+        staredAlbumField.setText("0");
+        staredPhotoField.setText("0");
+        albumField.setText("0");
+        photoField.setText("0");
+        task = new FutureTask<>(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                try {
+                    new Worker(new SwingStat()).expose(from,to);
+                } finally {
+                    SwingUtilities.invokeLater(new WhenDone());
+                }
+                return null;
+            }
+        });
+        ex.execute(task);
     }
 
     public static void main(String[] args) throws InvocationTargetException, InterruptedException {
@@ -220,12 +235,14 @@ public class Expose {
                 } catch (IllegalAccessException e) {
                 }
                 JFrame frame = new JFrame("Expose");
-                frame.setContentPane(new Expose(Paths.get(from),Paths.get(to)).contentPane);
+                final Expose expose = new Expose(Paths.get(from), Paths.get(to));
+                frame.setContentPane(expose.contentPane);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.pack();
                 frame.setSize(400, 265);
                 frame.setLocationRelativeTo(null);  // *** this will center the frame
                 frame.setVisible(true);
+                expose.onStartButtonPressed();
             }
         });
 
@@ -240,4 +257,5 @@ public class Expose {
     private JLabel photoField;
     private JLabel albumField;
     private JPanel contentPane;
+    private JButton okButton;
 }
